@@ -14,6 +14,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            height: 100vh;
+            overflow: hidden;
         }
         h1, h2 {
             color: #444;
@@ -34,9 +36,10 @@
             display: flex;
             flex-direction: column;
             width: 100%;
+            height: 100%;
         }
         .video-container {
-            flex: 1;
+            flex: 0 0 auto;
             display: flex;
             justify-content: center;
             margin-bottom: 20px;
@@ -47,8 +50,7 @@
             flex: 1;
             display: flex;
             justify-content: center;
-            max-height: 600px; /* Adjust the height as necessary */
-            overflow-y: auto;
+            overflow: hidden; /* Prevent the container itself from scrolling */
         }
         iframe {
             border: 1px solid #ccc;
@@ -61,7 +63,8 @@
             border-radius: 8px;
             width: 100%;
             max-width: 600px;
-            overflow: auto;
+            height: calc(90vh - 460px); /* Adjust to fit the viewport height, considering other elements */
+            overflow-y: auto; /* Make the text inside scrollable */
             line-height: 1.2;
             margin: 0;
         }
@@ -86,8 +89,8 @@
                 margin-bottom: 0;
                 margin-right: 20px;
             }
-            .transcript-container {
-                justify-content: flex-start;
+            .transcript {
+                height: calc(70vh - 40px); /* Adjust as necessary for larger screens */
             }
         }
     </style>

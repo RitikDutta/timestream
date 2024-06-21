@@ -4,6 +4,93 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Display YouTube Video</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1, h2 {
+            color: #444;
+        }
+        a {
+            text-decoration: none;
+            color: #0066cc;
+            margin-bottom: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+        }
+        .video-transcript {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .video-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: sticky;
+            top: 20px; /* Adjust as necessary */
+        }
+        .transcript-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            max-height: 600px; /* Adjust the height as necessary */
+            overflow-y: auto;
+        }
+        iframe {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        .transcript {
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 600px;
+            overflow: auto;
+            line-height: 1.2;
+            margin: 0;
+        }
+        .timestamp {
+            cursor: pointer;
+            color: #0066cc;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .timestamp:hover {
+            text-decoration: underline;
+        }
+        .transcript-line {
+            margin: 0;
+            padding: 2px 0;
+        }
+        @media (min-width: 768px) {
+            .video-transcript {
+                flex-direction: row;
+            }
+            .video-container, .transcript-container {
+                margin-bottom: 0;
+                margin-right: 20px;
+            }
+            .transcript-container {
+                justify-content: flex-start;
+            }
+        }
+    </style>
     <script>
         function seekTo(seconds) {
             var iframe = document.getElementById('youtube-iframe');
@@ -26,17 +113,24 @@
 </head>
 <body>
     <h1>Here is your video:</h1>
-    <iframe id="youtube-iframe" width="560" height="315" src="{{ youtube_url }}" frameborder="0" allowfullscreen></iframe>
-    <br>
-    <a href="{{ url_for('index') }}">Go back</a>
-
-    <h2>Transcript:</h2>
-    <pre>
-        {% for line in transcript %}
-            {% set time = line.split(' ', 1)[0] %}
-            {% set text = line.split(' ', 1)[1] %}
-            <span onclick="seekTo(parseTimeToSeconds('{{ time }}'))" style="cursor: pointer; color: blue;">{{ time }}</span> {{ text }}<br>
-        {% endfor %}
-    </pre>
+    <div class="container">
+        <a href="{{ url_for('index') }}">Go back</a>
+        <div class="video-transcript">
+            <div class="video-container">
+                <iframe id="youtube-iframe" width="560" height="315" src="{{ youtube_url }}" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <div class="transcript-container">
+                <div class="transcript">
+                    {% for line in transcript %}
+                        {% set time = line.split(' ', 1)[0] %}
+                        {% set text = line.split(' ', 1)[1] %}
+                        <div class="transcript-line">
+                            <span class="timestamp" onclick="seekTo(parseTimeToSeconds('{{ time }}'))">{{ time }}</span> {{ text }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

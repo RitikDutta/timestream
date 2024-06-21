@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 from youtube_transcript_api import YouTubeTranscriptApi, NoTranscriptFound
 import google.generativeai as genai
 from dotenv import load_dotenv
@@ -68,6 +68,15 @@ def display():
     meaningful_timestamps = generate_meaningful_timestamps(transcript)
     embed_url = f"https://www.youtube.com/embed/{video_id}"
     return render_template('display.html', youtube_url=embed_url, transcript=meaningful_timestamps)
+
+@app.route('/reload_timestamps', methods=['POST'])
+def reload_timestamps():
+    video_id = request.json['video_id']
+    video_id = video_id.split("embed/")[-1]
+    print("ID::: ", video_id)
+    transcript = get_youtube_transcript(video_id)
+    meaningful_timestamps = generate_meaningful_timestamps(transcript)
+    return jsonify(timestamps=meaningful_timestamps)
 
 if __name__ == '__main__':
     app.run(debug=True)

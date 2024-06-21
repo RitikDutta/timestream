@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display YouTube Video</title>
+</head>
+<body>
+    <h1>this is  video:</h1>
+    <iframe width="560" height="315" src="{{ youtube_url }}" frameborder="0" allowfullscreen></iframe>
+    <br>
+    <a href="{{ url_for('index') }}">Go back</a>
+
+    <h2>Transcript:</h2>
+    <pre>
+        {% for line in transcript %}
+            {{ line }}
+        {% endfor %}
+    </pre>
+</body>
+</html>

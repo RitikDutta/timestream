@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>youtube video</title>
+</head>
+<body>
+    <h1>Enter YouTube URL</h1>
+    <form action="{{ url_for('display') }}" method="post">
+        <label for="youtube_url">YouTube URL:</label>
+        <input type="text" id="youtube_url" name="youtube_url" required>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,20 @@
+### Brief Instructions for Generating YouTube Timestamps
+
+1. **Start at 0:00**: Begin with "0:00 - Introduction."
+2. **Short Titles**: Keep titles concise, max 5 words.
+3. **Key Points Only**: Include timestamps for major sections and transitions only.
+4. **Consistent Format**: Use "[Time] - [Title]" format.
+5. **Limit Quantity**: Aim for 5-10 important timestamps for a 10-15 minute video.
+6. **Verify Accuracy**: Ensure timestamps align with actual video content.
+7. **write in english**
+
+Example:
+
+```
+0:00 - Introduction
+1:30 - Overview
+3:45 - Key Concept 1
+6:00 - Topic 2
+8:30 - Key Takeaways
+10:00 - Conclusion
+```

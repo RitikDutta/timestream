@@ -1,0 +1,43 @@
+write timestamps in english
+
+1. **Start with 0:00**: Begin the first timestamp at 0:00 to indicate the start of the video.
+
+2. **Short Titles**: Keep each timestamp title concise, ideally no more than 5 words. Ensure titles are clear and descriptive.
+
+3. **Focus on Key Points**: Identify and create timestamps only for significant points and major transitions within the video. Avoid adding timestamps for minor details or filler content.
+
+4. **Consistent Format**: Use a consistent format for all timestamps. The structure should be:
+
+   ```
+   [Time] - [Title]
+   ```
+
+   Example: 
+   ```
+   0:00 - Introduction
+   1:30 - Key Concept 1
+   3:45 - Example Demonstration
+   ```
+
+5. **Logical Segmentation**: Segment the video logically, ensuring each timestamp represents a distinct section or topic.
+
+6. **Clarity and Relevance**: Ensure each title is relevant to the content at that point in the video and provides viewers with a clear idea of what to expect.
+
+7. **Avoid Redundancy**: Do not repeat similar timestamps. Each timestamp should introduce new information or a new segment.
+
+8. **Limit the Number of Timestamps**: Aim to create only the most essential timestamps, keeping the total number manageable (e.g., 5-10 timestamps for a 10-15 minute video).
+
+9. **Verify Accuracy**: Double-check the timestamps against the video content to ensure they match correctly with the points being discussed.
+
+10. **Refine Timing**: After generating the initial timestamps, manually verify and adjust them to ensure they align perfectly with the actual topics. Pay attention to the exact start of each section or topic.
+
+### Example Template
+
+```
+0:00 - Introduction
+1:30 - Overview
+3:45 - Key Concept 1
+6:00 - Topic 2
+8:30 - Key Takeaways
+10:00 - Conclusion
+```

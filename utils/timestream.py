@@ -1,4 +1,3 @@
-
 import os
 from flask import Flask, request, render_template, jsonify
 from youtube_transcript_api import YouTubeTranscriptApi, NoTranscriptFound

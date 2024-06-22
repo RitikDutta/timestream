@@ -32,12 +32,12 @@ class Timestream:
                     text = entry['text']
                     transcript_text.append(f"{start_time} {text}")
                 return transcript_text  # Return if transcript is found
-            except NoTranscriptFound:
+            except NoTranscriptFound as e:
                 print(f"Transcript not found for language: {language}")
         
-            raise NoTranscriptFound(f"Transcript not found for languages: {', '.join(languages)}")
+        # If no transcript is found for any language, raise the exception with required arguments
+        raise NoTranscriptFound(requested_language_codes=languages, transcript_data=None)
 
-        return transcript_text
     def generate_meaningful_timestamps(self, transcript):
         load_dotenv()
         GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
@@ -52,7 +52,7 @@ class Timestream:
                 "max_output_tokens": 8192,
                 "response_mime_type": "text/plain",
             },
-            system_instruction=self.get_instructions('utils/instructions.txt')
+            system_instruction=self.get_instructions('timestream/utils/instructions.txt')
         )
 
         chat_session = model.start_chat(history=[])

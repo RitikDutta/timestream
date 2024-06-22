@@ -9,7 +9,7 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #f4f4f4;
+            background-color: #e9ecef;
             color: #333;
             padding: 20px;
             margin: 0;
@@ -18,16 +18,31 @@
             align-items: center;
             height: 100vh;
             overflow: hidden;
+            animation: fadeIn 1s ease-in-out;
         }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         h1, h2 {
             color: #444;
         }
+
         a {
             text-decoration: none;
             color: #0066cc;
             margin-bottom: 20px;
             font-weight: 500;
         }
+
         .container {
             display: flex;
             flex-direction: column;
@@ -35,12 +50,14 @@
             width: 100%;
             max-width: 1200px;
         }
+
         .video-transcript {
             display: flex;
             flex-direction: column;
             width: 100%;
             height: 100%;
         }
+
         .video-container {
             flex: 0 0 auto;
             display: flex;
@@ -49,6 +66,7 @@
             position: sticky;
             top: 20px; /* Adjust as necessary */
         }
+
         .transcript-container {
             flex: 1;
             display: flex;
@@ -56,14 +74,17 @@
             overflow: hidden; /* Prevent the container itself from scrolling */
             position: relative;
         }
+
         iframe {
             border: 1px solid #ccc;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
         .transcript {
             background-color: #fff;
             padding: 20px;
+            padding-top: 50px;
             border: 1px solid #ddd;
             border-radius: 8px;
             width: 100%;
@@ -75,9 +96,11 @@
             position: relative;
             transition: background-color 0.3s ease;
         }
+
         .transcript.loading {
             animation: breathing 1.5s infinite;
         }
+
         @keyframes breathing {
             0% {
                 background-color: #e0e0e0;
@@ -89,33 +112,41 @@
                 background-color: #e0e0e0;
             }
         }
+
         .transcript::-webkit-scrollbar {
             width: 10px;
         }
+
         .transcript::-webkit-scrollbar-track {
             background: #f1f1f1;
             border-radius: 8px;
         }
+
         .transcript::-webkit-scrollbar-thumb {
             background: #888;
             border-radius: 8px;
         }
+
         .transcript::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
+
         .timestamp {
             cursor: pointer;
             color: #0066cc;
             margin-right: 10px;
             font-weight: 500;
         }
+
         .timestamp:hover {
             text-decoration: underline;
         }
+
         .transcript-line {
             margin: 0;
             padding: 4px 0;
         }
+
         .buttons {
             position: absolute;
             top: 10px;
@@ -123,6 +154,7 @@
             display: flex;
             gap: 10px;
         }
+
         .button {
             background-color: #0066cc;
             color: white;
@@ -133,21 +165,33 @@
             font-size: 16px;
             display: flex;
             align-items: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
+
         .button i {
             margin-right: 5px;
         }
+
         .button:hover {
             background-color: #005bb5;
+            transform: translateY(-2px);
         }
+
+        .button:active {
+            background-color: #004494;
+            transform: translateY(0);
+        }
+
         @media (min-width: 768px) {
             .video-transcript {
                 flex-direction: row;
             }
+
             .video-container, .transcript-container {
                 margin-bottom: 0;
                 margin-right: 20px;
             }
+
             .transcript {
                 height: calc(70vh - 40px); /* Adjust as necessary for larger screens */
             }

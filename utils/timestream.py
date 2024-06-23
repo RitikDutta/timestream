@@ -3,7 +3,7 @@ from flask import Flask, request, render_template, jsonify
 from youtube_transcript_api import YouTubeTranscriptApi, NoTranscriptFound
 import google.generativeai as genai
 from dotenv import load_dotenv
-
+import re
 class Timestream:
     def format_time(self, seconds):
         hours = int(seconds // 3600)
@@ -13,6 +13,18 @@ class Timestream:
             return f"{hours:02}:{minutes:02}:{seconds:02}"
         else:
             return f"{minutes:02}:{seconds:02}"
+
+    def get_youtube_video_id(self, url):
+        # Regex patterns for different YouTube URL formats
+        patterns = [
+            r'(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})',
+        ]
+
+        for pattern in patterns:
+            match = re.match(pattern, url)
+            if match:
+                return match.group(1)
+        return None
 
     def get_instructions(self, instructions):
         with open(instructions, 'r') as file:

@@ -78,3 +78,34 @@ class Timestream:
                 cleaned_line = line.strip().strip("`").replace('*', '')
                 cleaned_lines.append(cleaned_line)
         return cleaned_lines
+    
+
+
+    def user_query(self, transcript, query):
+        load_dotenv()
+        GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+        genai.configure(api_key=GOOGLE_API_KEY)
+
+        model = genai.GenerativeModel(
+            model_name="gemini-1.5-pro",
+            generation_config={
+                "temperature": 1,
+                "top_p": 0.95,
+                "top_k": 64,
+                "max_output_tokens": 8192,
+                "response_mime_type": "text/plain",
+            },
+            system_instruction=self.get_instructions('timestream/utils/query_instructions.txt') + ' '.join([str(elem) for elem in transcript])
+        )
+
+        chat_session = model.start_chat(history=[])
+
+        # Send the transcript to the model
+        response = chat_session.send_message("\n".join(query))
+        cleaned_lines = []
+        for line in response.text.splitlines():
+            if line.strip():
+                # Remove unwanted characters and clean the line
+                cleaned_line = line.strip().strip("`").replace('*', '')
+                cleaned_lines.append(cleaned_line)
+        return cleaned_lines

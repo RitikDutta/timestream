@@ -95,14 +95,14 @@ class Timestream:
                 "max_output_tokens": 8192,
                 "response_mime_type": "text/plain",
             },
-            system_instruction=self.get_instructions('timestream/utils/query_instructions.txt') + ' '.join([str(elem) for elem in transcript])
+            system_instruction=self.get_instructions('timestream/utils/query_instructions.txt')
         )
 
         chat_session = model.start_chat(history=[])
 
         # Send the transcript to the model
         try:
-            response = chat_session.send_message("\n".join(query))
+            response = chat_session.send_message("\n".join(query) + " ".join(transcript) )
             cleaned_lines = []
             for line in response.text.splitlines():
                 if line.strip():

@@ -101,11 +101,15 @@ class Timestream:
         chat_session = model.start_chat(history=[])
 
         # Send the transcript to the model
-        response = chat_session.send_message("\n".join(query))
-        cleaned_lines = []
-        for line in response.text.splitlines():
-            if line.strip():
-                # Remove unwanted characters and clean the line
-                cleaned_line = line.strip().strip("`").replace('*', '')
-                cleaned_lines.append(cleaned_line)
-        return cleaned_lines
+        try:
+            response = chat_session.send_message("\n".join(query))
+            cleaned_lines = []
+            for line in response.text.splitlines():
+                if line.strip():
+                    # Remove unwanted characters and clean the line
+                    cleaned_line = line.strip().strip("`").replace('*', '')
+                    cleaned_lines.append(cleaned_line)
+            return cleaned_lines
+        except:
+            response = "The Video is too long for Our model to go through"
+            return response

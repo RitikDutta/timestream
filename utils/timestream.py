@@ -4,7 +4,22 @@ from youtube_transcript_api import YouTubeTranscriptApi, NoTranscriptFound
 import google.generativeai as genai
 from dotenv import load_dotenv
 import re
+import requests
+
 class Timestream:
+    def __init__(self, api_key='678df2f442c5b90111351c2f'):
+        """
+        Initializes the YouTubeTranscriptExtractor with the necessary API credentials.
+
+        Parameters:
+            api_key (str): The API key for authorization.
+        """
+        self.url = "https://www.youtube-transcript.io/api/transcripts"
+        self.headers = {
+            "Authorization": f"Basic {api_key}",
+            "Content-Type": "application/json"
+        }
+
     def format_time(self, seconds):
         hours = int(seconds // 3600)
         minutes = int((seconds % 3600) // 60)
@@ -34,10 +49,12 @@ class Timestream:
     def get_youtube_transcript(self, video_id):
         transcript_text = []
         languages = ['en', 'hi']
-        
+        print(f"----------{video_id}----------")
         for language in languages:
             try:
                 transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=[language])
+                print(type(transcript))
+                print(transcript)
                 print(f"Transcript found in language: {language}")
                 for entry in transcript:
                     start_time = self.format_time(entry['start'])
@@ -49,6 +66,118 @@ class Timestream:
         
         # If no transcript is found for any language, raise the exception with required arguments
         raise NoTranscriptFound(requested_language_codes=languages, transcript_data=None)
+
+    #as youtube have blocked the api from ipv6 commonly used by cloud platforms so we did a different technique to get the transcript
+    def get_youtube_transcript_different_api(self, video_id, preferred_language='English'):
+        
+        response_tr2 = self._make_api_request(video_id)
+        if not response_tr2:
+            print("Failed to retrieve transcript data.")
+            return []
+
+        # Step 2: Extract 'tracks' from the response
+        try:
+            tracks = response_tr2[0]['tracks']
+        except (IndexError, KeyError) as e:
+            print(f"Error extracting 'tracks' from response: {e}")
+            return []
+
+        # Step 3: Extract preferred language transcript
+        transcript = self._extract_transcript_with_floats(tracks, preferred_language)
+
+        # Step 4: If preferred language not found, fallback to alternative language
+        if not transcript:
+            fallback_language = 'Hindi (auto-generated)' if preferred_language.lower() == 'english' else 'English'
+            print(f"Preferred language '{preferred_language}' not found. Falling back to '{fallback_language}'.")
+            transcript = self._extract_transcript_with_floats(tracks, fallback_language)
+
+            if not transcript:
+                print(f"No transcript available for '{preferred_language}' or '{fallback_language}'.")
+                return []
+
+        # Step 5: Format the transcript entries
+        transcript_text = []
+        for entry in transcript:
+            start_time = self._format_time(entry['start'])
+            text = entry['text']
+            transcript_text.append(f"{start_time} {text}")
+
+        return transcript_text
+
+    def _make_api_request(self, video_id):
+        """
+        Makes a POST request to the YouTube Transcript API to fetch transcript data.
+
+        Parameters:
+            video_id (str): The YouTube video ID.
+
+        Returns:
+            list or None: Parsed JSON response if successful; otherwise, None.
+        """
+        payload = {
+            "ids": [video_id]
+        }
+
+        try:
+            response = requests.post(self.url, headers=self.headers, json=payload)
+            if response.status_code == 200:
+                response_tr2 = response.json()
+                print("Response successfully received and parsed!")
+                # Uncomment the following line to see the full JSON response
+                # print(json.dumps(response_tr2, indent=2))
+                return response_tr2
+            else:
+                print(f"Request failed with status code {response.status_code}: {response.text}")
+                return None
+        except requests.exceptions.RequestException as e:
+            print(f"An error occurred during the API request: {e}")
+            return None
+
+    def _extract_transcript_with_floats(self, tracks, language):
+        """
+        Extracts the transcript for the specified language and converts 'start' and 'dur' to floats.
+
+        Parameters:
+            tracks (list): List of language blocks with transcripts.
+            language (str): The language to extract (e.g., 'English' or 'Hindi (auto-generated)').
+
+        Returns:
+            list or None: List of transcript entries with 'start' and 'dur' as floats, or None if not found.
+        """
+        # Find the matching language block
+        transcript = next(
+            (track['transcript'] for track in tracks if track['language'].lower() == language.lower()),
+            None
+        )
+
+        if transcript:
+            # Convert 'start' and 'dur' to floats
+            for entry in transcript:
+                try:
+                    entry['start'] = float(entry.get('start', 0))
+                except ValueError:
+                    entry['start'] = 0.0
+                try:
+                    entry['dur'] = float(entry.get('dur', 0))
+                except ValueError:
+                    entry['dur'] = 0.0
+            return transcript
+        else:
+            return None
+
+    def _format_time(self, seconds):
+        """
+        Converts seconds (float) to MM:SS string format.
+
+        Parameters:
+            seconds (float): Time in seconds.
+
+        Returns:
+            str: Formatted time string in "MM:SS" format.
+        """
+        minutes = int(seconds // 60)
+        secs = int(seconds % 60)
+        return f"{minutes:02}:{secs:02}"
 
     def generate_meaningful_timestamps(self, transcript):
         load_dotenv()

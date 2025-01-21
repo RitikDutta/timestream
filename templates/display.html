@@ -61,17 +61,19 @@
         .video-container {
             flex: 0 0 auto;
             display: flex;
+            flex-direction: column;
             justify-content: center;
+            align-items: center;
             margin-bottom: 20px;
             position: sticky;
-            top: 20px; /* Adjust as necessary */
+            top: 20px;
         }
 
         .transcript-container {
             flex: 1;
             display: flex;
             justify-content: center;
-            overflow: hidden; /* Prevent the container itself from scrolling */
+            overflow: hidden;
             position: relative;
         }
 
@@ -89,8 +91,8 @@
             border-radius: 8px;
             width: 100%;
             max-width: 600px;
-            height: calc(100vh - 460px); /* Adjust to fit the viewport height, considering other elements */
-            overflow-y: auto; /* Make the text inside scrollable */
+            height: calc(100vh - 460px);
+            overflow-y: auto;
             line-height: 1.6;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             position: relative;
@@ -181,6 +183,9 @@
             background-color: #004494;
             transform: translateY(0);
         }
+        .yt_frame{
+                width: 90%;
+            }
 
         @media (min-width: 768px) {
             .video-transcript {
@@ -193,8 +198,74 @@
             }
 
             .transcript {
-                height: calc(70vh - 40px); /* Adjust as necessary for larger screens */
+                height: calc(70vh - 40px);
             }
+            .yt_frame{
+                width: revert-layer;
+            }
+        }
+
+        /* Styles for the query form and response text below the player */
+        #queryForm {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-top: 20px;
+        }
+
+        #queryForm label {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        #queryForm input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        #queryForm button {
+            background-color: #0066cc;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        #queryForm button:hover {
+            background-color: #005bb5;
+        }
+
+        #queryForm button:active {
+            background-color: #004494;
+        }
+
+        #queryResponse {
+            margin-top: 15px;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333;
+            word-wrap: break-word;
+        }
+
+        /* Breathing effect for queryResponse when loading */
+        #queryResponse.loading {
+            animation: breathing 1.5s infinite;
+            background-color: #e0e0e0;
         }
     </style>
     <script>
@@ -264,10 +335,16 @@
 <body>
     <h1>Here is your video:</h1>
     <div class="container">
-        <a href="{{ url_for('timestream') }}">Go back</a>
+        <a href="{{ url_for('timestream/index') }}">Go back</a>
         <div class="video-transcript">
             <div class="video-container">
-                <iframe id="youtube-iframe" width="560" height="315" src="{{ youtube_url }}" frameborder="0" allowfullscreen></iframe>
+                <iframe class="yt_frame" id="youtube-iframe" width="560" height="315" src="{{ youtube_url }}" frameborder="0" allowfullscreen></iframe>
+                <form id="queryForm">
+                    <label for="user_query">Ask a question about the video:</label>
+                    <input type="text" id="user_query" name="user_query" placeholder="Enter your question..." required>
+                    <button type="submit">Submit</button>
+                </form>
+                <div id="queryResponse"></div>
             </div>
             <div class="transcript-container">
                 <div class="transcript">
@@ -290,5 +367,70 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function linkifyTimestamps(text) {
+            const timeRangePattern = /\b(\d{1,2}:\d{2}(?::\d{2})?-\d{1,2}:\d{2}(?::\d{2})?)\b/g;
+            const singleTimePattern = /\b(\d{1,2}:\d{2}(?::\d{2})?)\b/g;
+
+            text = text.replace(timeRangePattern, (match, p1) => {
+                return `<span class="timestamp" style="color:blue; cursor:pointer;" onclick="seekToRange('${p1}')">${p1}</span>`;
+            });
+
+            text = text.replace(singleTimePattern, (match, p1) => {
+                return `<span class="timestamp" style="color:blue; cursor:pointer;" onclick="seekTo(parseTimeToSeconds('${p1}'))">${p1}</span>`;
+            });
+
+            return text;
+        }
+
+        function seekToRange(rangeString) {
+            let [start, end] = rangeString.split('-');
+            seekTo(parseTimeToSeconds(start.trim()));
+        }
+    </script>
+
+
+    <script>
+        document.getElementById('queryForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const userQuery = document.getElementById('user_query').value;
+            const videoId = "{{ youtube_url }}".split("embed/")[1];
+            const queryResponseDiv = document.getElementById('queryResponse');
+
+            // Add the loading class to trigger breathing effect
+            queryResponseDiv.classList.add('loading');
+            // Optionally, you can clear previous content or show a placeholder
+            queryResponseDiv.innerHTML = '';
+
+            const response = await fetch('/user_query', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    video_id: videoId,
+                    user_query: userQuery
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                
+                if (Array.isArray(data.answer)) {
+                    const combined = data.answer.join('\n');
+                    queryResponseDiv.innerHTML = linkifyTimestamps(combined);
+                } else {
+                    queryResponseDiv.innerHTML = linkifyTimestamps(data.answer);
+                }
+            } else {
+                queryResponseDiv.innerText = 'Error: Could not get answer.';
+            }
+
+            // Remove the loading class after response is handled
+            queryResponseDiv.classList.remove('loading');
+        });
+    </script>
 </body>
 </html>

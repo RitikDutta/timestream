@@ -15,7 +15,7 @@ def display():
     transcript = timestream.get_youtube_transcript(video_id)
     meaningful_timestamps = timestream.generate_meaningful_timestamps(transcript)
     embed_url = f"https://www.youtube.com/embed/{video_id}"
-    return render_template('display.html', youtube_url=embed_url, transcript=meaningful_timestamps)
+    return render_template('timestream/display.html', youtube_url=embed_url, transcript=meaningful_timestamps)
 
 @app.route('/reload_timestamps', methods=['POST'])
 def reload_timestamps():
@@ -25,6 +25,20 @@ def reload_timestamps():
     transcript = timestream.get_youtube_transcript(video_id)
     meaningful_timestamps = timestream.generate_meaningful_timestamps(transcript)
     return jsonify(timestamps=meaningful_timestamps)
+
+@app.route('/user_query', methods=['POST'])
+def user_query_endpoint():
+    data = request.get_json()
+    video_id = data['video_id']
+    user_query = data['user_query']
+    
+    # Get the transcript with your existing method
+    transcript = timestream.get_youtube_transcript(video_id)
+    # Use the user_query function defined in Timestream
+    answer = timestream.user_query(transcript, user_query)
+
+    # Return JSON response
+    return jsonify({'answer': answer})
 
 if __name__ == '__main__':
     app.run(debug=True)

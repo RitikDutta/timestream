@@ -193,7 +193,7 @@ class Timestream:
                 "max_output_tokens": 8192,
                 "response_mime_type": "text/plain",
             },
-            system_instruction=self.get_instructions('timestream/utils/instructions.txt')
+            system_instruction=self.get_instructions('utils/instructions.txt')
         )
 
         chat_session = model.start_chat(history=[])
@@ -224,7 +224,7 @@ class Timestream:
                 "max_output_tokens": 1000,
                 "response_mime_type": "text/plain",
             },
-            system_instruction=self.get_instructions('timestream/utils/query_instructions.txt')
+            system_instruction=self.get_instructions('utils/query_instructions.txt')
         )
 
         chat_session = model.start_chat(history=[])

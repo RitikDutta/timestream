@@ -141,7 +141,7 @@
 <body>
     <div class="container" id="container">
         <h1>Enter YouTube URL</h1>
-        <form id="youtubeForm" action="{{ url_for('timestream/display') }}" method="post">
+        <form id="youtubeForm" action="{{ url_for('display') }}" method="post">
             <label for="youtube_url">YouTube URL:</label>
             <input type="text" id="youtube_url" name="youtube_url" required>
             <button type="submit">Submit</button>
@@ -153,6 +153,8 @@
             document.getElementById('container').classList.add('breathing');
         });
     </script>
+
+    
 </body>
 
 </html>

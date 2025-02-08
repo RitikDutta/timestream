@@ -17,7 +17,7 @@
             flex-direction: column;
             align-items: center;
             height: 100vh;
-            overflow: hidden;
+            /* overflow: hidden; */
             animation: fadeIn 1s ease-in-out;
         }
 
@@ -62,11 +62,60 @@
             flex: 0 0 auto;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            justify-content: space-between;
             margin-bottom: 20px;
             position: sticky;
             top: 20px;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            width: 100%;
+            gap: 10px;
+        }
+
+        .input-container label {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #444;
+        }
+
+        .input-container input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .input-container button {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .input-container button:hover {
+            background-color: #005bb5;
+            transform: translateY(-2px);
+        }
+
+        .input-container button:active {
+            background-color: #004494;
+            transform: translateY(0);
         }
 
         .transcript-container {
@@ -114,6 +163,23 @@
                 background-color: #e0e0e0;
             }
         }
+
+        .loading {
+    animation: breathing 1.5s infinite;
+}
+
+@keyframes breathing {
+    0% {
+        background-color: #e0e0e0;
+    }
+    50% {
+        background-color: #c0c0c0;
+    }
+    100% {
+        background-color: #e0e0e0;
+    }
+}
+
 
         .transcript::-webkit-scrollbar {
             width: 10px;
@@ -183,9 +249,6 @@
             background-color: #004494;
             transform: translateY(0);
         }
-        .yt_frame{
-                width: 90%;
-            }
 
         @media (min-width: 768px) {
             .video-transcript {
@@ -200,96 +263,102 @@
             .transcript {
                 height: calc(70vh - 40px);
             }
-            .yt_frame{
-                width: revert-layer;
+        }
+        @media (max-width: 768px) {
+            iframe{
+                width: 100%;
             }
         }
+        .scrollable-label {
+    max-height: 150px; /* Adjust this height as needed */
+    overflow-y: auto;
+    display: block; /* Ensure the label behaves as a block element */
+    /* border: 1px solid #ccc;  */
+    padding: 5px; /* Optional: Add some padding */
+}
 
-        /* Styles for the query form and response text below the player */
-        #queryForm {
-            width: 100%;
-            max-width: 600px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            margin-top: 20px;
-        }
+/* Custom scrollbar styles */
+.scrollable-label::-webkit-scrollbar {
+    width: 8px; /* Width of the entire scrollbar */
+}
 
-        #queryForm label {
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 5px;
-        }
+.scrollable-label::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color of the scrollbar track */
+    border-radius: 10px; 
+}
 
-        #queryForm input {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-        }
+.scrollable-label::-webkit-scrollbar-thumb {
+    background-color: #888; /* Color of the scrollbar thumb */
+    border-radius: 10px; 
+    /* border: 2px solid #f1f1f1;  */
+}
 
-        #queryForm button {
-            background-color: #0066cc;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            padding: 8px 12px;
-            cursor: pointer;
-            font-size: 14px;
-        }
+.scrollable-label::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Color of the scrollbar thumb on hover */
+}
 
-        #queryForm button:hover {
-            background-color: #005bb5;
-        }
 
-        #queryForm button:active {
-            background-color: #004494;
-        }
-
-        #queryResponse {
-            margin-top: 15px;
-            background-color: #fff;
-            padding: 10px;
-            border-radius: 4px;
-            max-width: 600px;
-            width: 100%;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            font-size: 14px;
-            line-height: 1.5;
-            color: #333;
-            word-wrap: break-word;
-        }
-
-        /* Breathing effect for queryResponse when loading */
-        #queryResponse.loading {
-            animation: breathing 1.5s infinite;
-            background-color: #e0e0e0;
-        }
     </style>
     <script>
+        var youTubePlayer;
+        
+        var vidElement = document.getElementById("youtube-iframe");
+
+        function onYouTubeIframeAPIReady() {
+            var videoId = "{{ youtube_url}}";
+
+            youTubePlayer = new YT.Player('youtube-iframe', {
+                videoId: videoId,
+                playerVars: { 'autoplay': 0, 'controls': 1 },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onError': onPlayerError
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            event.target.playVideo();
+        }
+
+        function onPlayerError(event) {
+            console.error("YouTube Player Error:", event.data);
+        }
+
         function seekTo(seconds) {
-            var iframe = document.getElementById('youtube-iframe');
-            iframe.src = iframe.src.split('?')[0] + '?start=' + seconds + '&autoplay=1';
+            if (youTubePlayer && youTubePlayer.seekTo) {
+                youTubePlayer.seekTo(seconds, true);
+            }
         }
 
         function parseTimeToSeconds(time) {
-            var parts = time.split(':');
-            var seconds = 0;
-            if (parts.length === 3) {
-                seconds = parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
-            } else if (parts.length === 2) {
-                seconds = parseInt(parts[0]) * 60 + parseInt(parts[1]);
-            } else if (parts.length === 1) {
-                seconds = parseInt(parts[0]);
-            }
-            return seconds;
-        }
+    var parts = time.split(':');
+    var seconds = 0;
+    if (parts.length === 3) {
+        seconds = parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
+    } else if (parts.length === 2) {
+        seconds = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+    } else if (parts.length === 1) {
+        seconds = parseInt(parts[0]);
+    }
+    return seconds;
+}
+
+function convertTimePatternsToClickable(text) {
+    text = String(text); // Ensure text is a string
+    const timePattern = /\b\d{1,2}:\d{2}(?::\d{2})?\b/g;
+    return text.replace(timePattern, (match) => {
+        const seconds = parseTimeToSeconds(match);
+        return `<span class="timestamp" onclick="seekTo(${seconds})">${match}</span>`;
+    });
+}
+
+
 
         function copyTranscript() {
             const transcript = document.querySelector('.transcript').innerText;
             navigator.clipboard.writeText(transcript).then(() => {
+                alert('Transcript copied to clipboard.');
             }).catch(err => {
                 console.error('Failed to copy: ', err);
             });
@@ -330,21 +399,57 @@
 
             transcriptContainer.classList.remove('loading');
         }
+
+        async function submitComment() {
+    const videoId = "{{ youtube_url.split('v=')[-1] }}";
+    const inputText = document.getElementById('inputText').value;
+    const inputLabel = document.getElementById('inputLabel');
+    const q_submit = document.getElementById('q_submit');
+
+    // Add the loading animation
+    q_submit.classList.add('loading');
+
+    const response = await fetch('/user_query', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ user_query: inputText, video_id: videoId })
+    });
+
+    if (response.ok) {
+        const data = await response.json();
+        const modifiedResponse = convertTimePatternsToClickable(data.response);
+        inputLabel.innerHTML = modifiedResponse;  // Use innerHTML to render clickable timestamps
+    } else {
+        console.error('Failed to submit comment');
+    }
+
+    // Remove the loading animation
+    q_submit.classList.remove('loading');
+}
+
+
+        // Load YouTube IFrame API
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     </script>
 </head>
 <body>
-    <h1>Here is your video:</h1>
     <div class="container">
-        <a href="{{ url_for('timestream/index') }}">Go back</a>
+        <a href="{{ url_for('index') }}">Go back</a>
         <div class="video-transcript">
             <div class="video-container">
-                <iframe class="yt_frame" id="youtube-iframe" width="560" height="315" src="{{ youtube_url }}" frameborder="0" allowfullscreen></iframe>
-                <form id="queryForm">
-                    <label for="user_query">Ask a question about the video:</label>
-                    <input type="text" id="user_query" name="user_query" placeholder="Enter your question..." required>
-                    <button type="submit">Submit</button>
-                </form>
-                <div id="queryResponse"></div>
+                <div id="youtube-iframe"></div>
+                <div class="input-container">
+                    <label id="inputLabel" class="scrollable-label">Your query result will appear here.</label>                    
+                    <div class="input-wrapper">
+                        <input type="text" id="inputText" placeholder="Enter Your Query">
+                        <button id="q_submit" onclick="submitComment()">Submit</button>
+                    </div>
+                </div>
             </div>
             <div class="transcript-container">
                 <div class="transcript">
@@ -367,70 +472,14 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function linkifyTimestamps(text) {
-            const timeRangePattern = /\b(\d{1,2}:\d{2}(?::\d{2})?-\d{1,2}:\d{2}(?::\d{2})?)\b/g;
-            const singleTimePattern = /\b(\d{1,2}:\d{2}(?::\d{2})?)\b/g;
-
-            text = text.replace(timeRangePattern, (match, p1) => {
-                return `<span class="timestamp" style="color:blue; cursor:pointer;" onclick="seekToRange('${p1}')">${p1}</span>`;
-            });
-
-            text = text.replace(singleTimePattern, (match, p1) => {
-                return `<span class="timestamp" style="color:blue; cursor:pointer;" onclick="seekTo(parseTimeToSeconds('${p1}'))">${p1}</span>`;
-            });
-
-            return text;
-        }
-
-        function seekToRange(rangeString) {
-            let [start, end] = rangeString.split('-');
-            seekTo(parseTimeToSeconds(start.trim()));
-        }
-    </script>
-
-
-    <script>
-        document.getElementById('queryForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const userQuery = document.getElementById('user_query').value;
-            const videoId = "{{ youtube_url }}".split("embed/")[1];
-            const queryResponseDiv = document.getElementById('queryResponse');
-
-            // Add the loading class to trigger breathing effect
-            queryResponseDiv.classList.add('loading');
-            // Optionally, you can clear previous content or show a placeholder
-            queryResponseDiv.innerHTML = '';
-
-            const response = await fetch('/user_query', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    video_id: videoId,
-                    user_query: userQuery
-                })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                
-                if (Array.isArray(data.answer)) {
-                    const combined = data.answer.join('\n');
-                    queryResponseDiv.innerHTML = linkifyTimestamps(combined);
-                } else {
-                    queryResponseDiv.innerHTML = linkifyTimestamps(data.answer);
-                }
-            } else {
-                queryResponseDiv.innerText = 'Error: Could not get answer.';
-            }
-
-            // Remove the loading class after response is handled
-            queryResponseDiv.classList.remove('loading');
-        });
-    </script>
 </body>
+<script>
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'x' || event.key === 'X') {
+            const inputLabel = document.getElementById('inputLabel');
+            const longText = "This is a long text that will be appended to the label to test the scroll functionality. ".repeat(10);
+            inputLabel.innerText += longText;
+        }
+    });
+</script>
 </html>

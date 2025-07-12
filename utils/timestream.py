@@ -7,13 +7,15 @@ import re
 import requests
 
 class Timestream:
-    def __init__(self, api_key='678df2f442c5b90111351c2f'):
+    def __init__(self, api_key='AIzaSyDNOZ4XoQjFLPWMZ0cmIYc1w8nx3eYS8hg'):
         """
         Initializes the YouTubeTranscriptExtractor with the necessary API credentials.
 
         Parameters:
             api_key (str): The API key for authorization.
         """
+        self.base_dir = os.path.abspath(os.path.dirname(__file__))
+
         self.url = "https://www.youtube-transcript.io/api/transcripts"
         self.headers = {
             "Authorization": f"Basic {api_key}",
@@ -52,13 +54,15 @@ class Timestream:
         print(f"----------{video_id}----------")
         for language in languages:
             try:
-                transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=[language])
+
+                YTA = YouTubeTranscriptApi()
+                transcript = YTA.fetch(video_id, languages=[language])
                 print(type(transcript))
-                print(transcript)
+                # print(transcript)
                 print(f"Transcript found in language: {language}")
                 for entry in transcript:
-                    start_time = self.format_time(entry['start'])
-                    text = entry['text']
+                    start_time = self.format_time(entry.start)
+                    text = entry.text
                     transcript_text.append(f"{start_time} {text}")
                 return transcript_text  # Return if transcript is found
             except NoTranscriptFound as e:
@@ -154,13 +158,13 @@ class Timestream:
             # Convert 'start' and 'dur' to floats
             for entry in transcript:
                 try:
-                    entry['start'] = float(entry.get('start', 0))
+                    entry.start = float(entry.get('start', 0))
                 except ValueError:
-                    entry['start'] = 0.0
+                    entry.start = 0.0
                 try:
-                    entry['dur'] = float(entry.get('dur', 0))
+                    entry.dur = float(entry.get('dur', 0))
                 except ValueError:
-                    entry['dur'] = 0.0
+                    entry.dur = 0.0
             return transcript
         else:
             return None
@@ -185,7 +189,7 @@ class Timestream:
         genai.configure(api_key=GOOGLE_API_KEY)
 
         model = genai.GenerativeModel(
-            model_name="gemini-1.5-pro",
+            model_name="gemini-2.5-flash-preview-04-17",
             generation_config={
                 "temperature": 1,
                 "top_p": 0.95,
@@ -193,7 +197,7 @@ class Timestream:
                 "max_output_tokens": 8192,
                 "response_mime_type": "text/plain",
             },
-            system_instruction=self.get_instructions('utils/instructions.txt')
+            system_instruction=self.get_instructions(os.path.join(self.base_dir, 'instructions.txt'))
         )
 
         chat_session = model.start_chat(history=[])
@@ -224,7 +228,7 @@ class Timestream:
                 "max_output_tokens": 1000,
                 "response_mime_type": "text/plain",
             },
-            system_instruction=self.get_instructions('utils/query_instructions.txt')
+            system_instruction=self.get_instructions(os.path.join(self.base_dir, 'query_instructions.txt'))
         )
 
         chat_session = model.start_chat(history=[])

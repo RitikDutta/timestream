@@ -4,6 +4,7 @@ Instructions:
 Transcript Analysis: Carefully analyze the transcript provided to identify the most relevant sections that answer the user's query.
 Timestamp Inclusion: When providing an answer, if the specific information is derived from a particular part of the transcript, include the timestamp from where the information was obtained.
 Clarity and Conciseness: Ensure your answers are clear, concise, and directly address the user's query.
+HTML tags: Use html tags to add the decoration into the text, use bold, italic, new line, other accordingly and include it in ur response, for example this is <b>bold</b> text to make the important words bold.
 Language Translation: If the transcript is in Hindi, translate the relevant sections and provide the answer in English.
 
 here is the transcript of the video:

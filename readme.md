@@ -6,48 +6,48 @@ Features
 
 🔹 YouTube-Integrated Button/Widget (New)
 
-A TimeStream button appears directly inside the YouTube app or website.
+- A TimeStream button appears directly inside the YouTube app or website.
 
-When clicked, it opens a floating or side panel without interrupting the video.
+- When clicked, it opens a floating or side panel without interrupting the video.
 
-Works seamlessly on the YouTube website with no page switching.
+- Works seamlessly on the YouTube website with no page switching.
 
 
 🔹 Side-by-Side LLM Frame (New)
 
-The LLM analysis window opens next to the YouTube player.
+- The LLM analysis window opens next to the YouTube player.
 
-Generates timestamps, highlights, summaries, and insights in real time.
+- Generates timestamps, highlights, summaries, and insights in real time.
 
-Auto-syncs with video progress as you watch.
+- Auto-syncs with video progress as you watch.
 
 
 🔹 Automatic Transcript Fetching
 
-Just provide the YouTube link (or use the built-in embed).
+- Just provide the YouTube link (or use the built-in embed).
 
-TimeStream automatically retrieves the transcript using API/LLM tools.
+- TimeStream automatically retrieves the transcript using API/LLM tools.
 
 
 🔹 Enhanced AI-Generated Timestamps
 
-Leverages a Large Language Model to detect important moments.
+- Leverages a Large Language Model to detect important moments.
 
-Produces cleaner, more accurate, and more meaningful timestamps than YouTube’s default chapters.
+- Produces cleaner, more accurate, and more meaningful timestamps than YouTube’s default chapters.
 
 
 🔹 Live Viewing With Smart Timestamps
 
-Watch the YouTube video while TimeStream dynamically updates timestamps.
+- Watch the YouTube video while TimeStream dynamically updates timestamps.
 
-Jump to any section using intelligent chapter markers.
+- Jump to any section using intelligent chapter markers.
 
 
 🔹 One-Tap Timestamp Copying
 
-Instantly copy timestamps or export them for later use.
+- Instantly copy timestamps or export them for later use.
 
-Ideal for students, creators, researchers, editors, and productivity workflows.
+- Ideal for students, creators, researchers, editors, and productivity workflows.
 
 ---
 

@@ -1,40 +1,53 @@
 # TimeStream
 
-TimeStream is an advanced tool that enhances your YouTube watching experience by generating intelligent, improved timestamps—now directly inside YouTube itself. With the new TimeStream Button/Widget, users no longer need to leave YouTube. Simply tap the TimeStream icon on the YouTube app or website, and a smart LLM-powered panel opens side-by-side with the video, providing real-time chaptering, summaries, and insights.
+TimeStream is an advanced tool that enhances your YouTube watching experience by generating intelligent, improved timestamps, now directly inside YouTube itself. With the new TimeStream Button/Widget, users no longer need to leave YouTube. Simply tap the TimeStream icon on the YouTube app or website, and a smart LLM-powered panel opens side-by-side with the video, providing real-time chaptering, summaries, and insights.
 
 Features
 
 🔹 YouTube-Integrated Button/Widget (New)
 
-- A TimeStream button appears directly inside the YouTube app or website.
--When clicked, it opens a floating or side panel without interrupting the video.
--Works seamlessly on the YouTube website with no page switching.
+A TimeStream button appears directly inside the YouTube app or website.
+
+When clicked, it opens a floating or side panel without interrupting the video.
+
+Works seamlessly on the YouTube website with no page switching.
 
 
 🔹 Side-by-Side LLM Frame (New)
--The LLM analysis window opens next to the YouTube player.
--Generates timestamps, highlights, summaries, and insights in real time.
--Auto-syncs with video progress as you watch.
+
+The LLM analysis window opens next to the YouTube player.
+
+Generates timestamps, highlights, summaries, and insights in real time.
+
+Auto-syncs with video progress as you watch.
 
 
 🔹 Automatic Transcript Fetching
--Just provide the YouTube link (or use the built-in embed).
--TimeStream automatically retrieves the transcript using API/LLM tools.
+
+Just provide the YouTube link (or use the built-in embed).
+
+TimeStream automatically retrieves the transcript using API/LLM tools.
 
 
 🔹 Enhanced AI-Generated Timestamps
--Leverages a Large Language Model to detect important moments.
--Produces cleaner, more accurate, and more meaningful timestamps than YouTube’s default chapters.
+
+Leverages a Large Language Model to detect important moments.
+
+Produces cleaner, more accurate, and more meaningful timestamps than YouTube’s default chapters.
 
 
 🔹 Live Viewing With Smart Timestamps
--Watch the YouTube video while TimeStream dynamically updates timestamps.
--Jump to any section using intelligent chapter markers.
+
+Watch the YouTube video while TimeStream dynamically updates timestamps.
+
+Jump to any section using intelligent chapter markers.
 
 
 🔹 One-Tap Timestamp Copying
--Instantly copy timestamps or export them for later use.
--Ideal for students, creators, researchers, editors, and productivity workflows.
+
+Instantly copy timestamps or export them for later use.
+
+Ideal for students, creators, researchers, editors, and productivity workflows.
 
 ---
 
